@@ -1,15 +1,19 @@
-//TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
-// click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
+import java.time.LocalDateTime;
+
 public class Main {
     public static void main(String[] args) {
-        //TIP Press <shortcut actionId="ShowIntentionActions"/> with your caret at the highlighted text
-        // to see how IntelliJ IDEA suggests fixing it.
-        System.out.printf("Hello and welcome!");
 
-        for (int i = 1; i <= 5; i++) {
-            //TIP Press <shortcut actionId="Debug"/> to start debugging your code. We have set one <icon src="AllIcons.Debugger.Db_set_breakpoint"/> breakpoint
-            // for you, but you can always add more by pressing <shortcut actionId="ToggleLineBreakpoint"/>.
-            System.out.println("i = " + i);
-        }
+        Doctor doctor = new Doctor("D001", "Dr. Juan Pérez", "Cardiología");
+
+        Paciente paciente = new Paciente("P001", "Ana Gómez");
+
+        LocalDateTime fechaHoraCita = LocalDateTime.of(2024, 2, 10, 14, 30);
+        Cita cita = new Cita("C001", fechaHoraCita, "Consulta de seguimiento", doctor, paciente);
+
+        System.out.println("Doctor: " + doctor.getNombre() + ", Especialidad: " + doctor.getEspecialidad());
+        System.out.println("Paciente: " + paciente.getNombre());
+        System.out.println("Cita: " + cita.getFechaHora().toString() + ", Motivo: " + cita.getMotivo() +
+                ", Doctor: " + cita.getDoctor().getNombre() +
+                ", Paciente: " + cita.getPaciente().getNombre());
     }
 }
