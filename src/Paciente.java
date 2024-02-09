@@ -16,12 +16,9 @@ public class Paciente {
         return nombre;
     }
 
-    // Setters
-    public void setId(String id) {
-        this.id = id;
+    @Override
+    public String toString(){
+        return this.id + "\t" + this.nombre;
     }
 
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
-    }
 }
