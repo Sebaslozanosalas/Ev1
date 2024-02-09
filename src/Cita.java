@@ -2,12 +2,12 @@ import java.time.LocalDateTime;
 
 public class Cita {
     private String id;
-    private LocalDateTime fechaHora;
+    private String fechaHora;
     private String motivo;
-    private Doctor doctor;
-    private Paciente paciente;
+    private String doctor;
+    private String paciente;
 
-    public Cita(String id, LocalDateTime fechaHora, String motivo, Doctor doctor, Paciente paciente) {
+    public Cita(String id, String fechaHora, String motivo, String doctor, String paciente) {
         this.id = id;
         this.fechaHora = fechaHora;
         this.motivo = motivo;
@@ -15,12 +15,11 @@ public class Cita {
         this.paciente = paciente;
     }
 
-    // Getters
     public String getId() {
         return id;
     }
 
-    public LocalDateTime getFechaHora() {
+    public String getFechaHora() {
         return fechaHora;
     }
 
@@ -28,32 +27,16 @@ public class Cita {
         return motivo;
     }
 
-    public Doctor getDoctor() {
+    public String getDoctor() {
         return doctor;
     }
 
-    public Paciente getPaciente() {
+    public String getPaciente() {
         return paciente;
     }
 
-    // Setters
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public void setFechaHora(LocalDateTime fechaHora) {
-        this.fechaHora = fechaHora;
-    }
-
-    public void setMotivo(String motivo) {
-        this.motivo = motivo;
-    }
-
-    public void setDoctor(Doctor doctor) {
-        this.doctor = doctor;
-    }
-
-    public void setPaciente(Paciente paciente) {
-        this.paciente = paciente;
+    @Override
+    public String toString() {
+        return this.id + "\t" + this.fechaHora  + "\t" + this.motivo  + "\t" + this.doctor  + "\t" + this.paciente;
     }
 }

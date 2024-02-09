@@ -1,0 +1,13 @@
+d001,Sebastian,General
+d002,Diego,Cardiologo
+d003,Carlos,Ginecologo
+d00,doctor-0,general-0
+d01,doctor-1,general-1
+d02,doctor-2,general-2
+d03,doctor-3,general-3
+d04,doctor-4,general-4
+d00,doctor-0,general-0
+d01,doctor-1,general-1
+d02,doctor-2,general-2
+d03,doctor-3,general-3
+d04,doctor-4,general-4
