@@ -113,6 +113,8 @@ public class Main {
 
         }
 
+        System.out.println("\nGuardando y saliendo...");
+
         // GUARDAR LOS DATOS
         guardarObjetos(PATH_DOCTORES, doctores, doctor -> {
             return doctor.getId() + "," + doctor.getNombre() + "," + doctor.getEspecialidad();
@@ -182,33 +184,6 @@ public class Main {
 
     }
 
-    public static void agregarDoctor(){
-        System.out.println("Crear doctor");
-    }
-
-    public static void agregarPaciente() {
-
-        Scanner sc = new Scanner(System.in);
-
-
-        System.out.println("Ingresa el nombre del paciente:");
-        String textoIngresado = sc.nextLine();
-        while (textoIngresado.length() < 3) {
-            System.out.println("Texto demasiado corto, intenta nuevamente...");
-            textoIngresado = sc.nextLine();
-        }
-
-        Paciente paciente = new Paciente("000", textoIngresado);
-        pacientes.add(paciente);
-
-        System.out.println("Paciente registrado: " + paciente);
-    }
-
-
-    public static void agregarCita(){
-        System.out.println("Crear cita");
-    }
-
     public static void esperarParaVolverAlMenu() {
 
         Scanner sc = new Scanner(System.in);
@@ -217,23 +192,185 @@ public class Main {
         sc.nextLine(); // Espera a que el usuario presione Enter
     }
 
-    // Funciones pendientes
-    public static void eliminarDoctor(){
-        System.out.println("Eliminando doctor");
+    public static String leerValidarInput(){
+
+        Scanner sc = new Scanner(System.in);
+        String textoIngresado = sc.nextLine();
+        while (textoIngresado.length() < 3) {
+            System.out.println("Texto demasiado corto, intenta nuevamente...");
+            textoIngresado = sc.nextLine();
+        }
+        return textoIngresado;
     }
 
-    public static void eliminarPaciente(){
-        System.out.println("Eliminando paciente");
+    public static void agregarPaciente() {
+
+        System.out.print("Nombre: ");
+
+        String textoIngresado = leerValidarInput();
+        Paciente paciente = new Paciente("000", textoIngresado);
+        pacientes.add(paciente);
+
+        System.out.println("Paciente registrado: " + paciente);
     }
 
-    public static void eliminarCita(){
-        System.out.println("Eliminando cita");
+    public static void agregarDoctor(){
+
+        System.out.print("Nombre: ");
+        String nombre = leerValidarInput();
+
+        System.out.print("Especialidad: ");
+        String especialidad = leerValidarInput();
+        Doctor doctor = new Doctor("000", nombre, especialidad);
+        doctores.add(doctor);
+
+        System.out.println("Doctor registrado: " + doctor);
+    }
+
+    public static void eliminarDoctor() {
+
+        Scanner sc = new Scanner(System.in);
+
+        System.out.print("Ingresa el ID del doctor a eliminar: ");
+        String id = sc.next();
+
+        // Encuentra el doctor con el ID dado en la lista
+        Doctor doctorAeliminar = null;
+        for (Doctor doctor : doctores) {
+            if (doctor.getId().equalsIgnoreCase(id)) {
+                doctorAeliminar = doctor;
+                break;
+            }
+        }
+
+        // Si se encontró el doctor, elimínalo de la lista
+        if (doctorAeliminar != null) {
+            doctores.remove(doctorAeliminar);
+            System.out.println("Doctor eliminado: " + doctorAeliminar);
+        } else {
+            System.out.println("No se encontró un doctor con el ID proporcionado.");
+        }
+    }
+
+    public static void eliminarPaciente() {
+
+        Scanner sc = new Scanner(System.in);
+
+        System.out.print("Ingresa el ID del paciente a eliminar: ");
+        String id = sc.next();
+
+        // Encuentra el paciente con el ID dado en la lista
+        Paciente pacienteAeliminar = null;
+        for (Paciente paciente : pacientes) {
+            if (paciente.getId().equalsIgnoreCase(id)) {
+                pacienteAeliminar = paciente;
+                break;
+            }
+        }
+
+        // Si se encontró el paciente, elimínalo de la lista
+        if (pacienteAeliminar != null) {
+            pacientes.remove(pacienteAeliminar);
+            System.out.println("Paciente eliminado: " + pacienteAeliminar);
+        } else {
+            System.out.println("No se encontró un paciente con el ID proporcionado.");
+        }
+    }
+
+    public static void eliminarCita() {
+        System.out.println("Eliminar cita");
+
+        Scanner sc = new Scanner(System.in);
+
+        System.out.println("Ingresa el ID de la cita a eliminar: ");
+        String idCita = sc.nextLine();
+
+        // Encuentra la cita con el ID dado en la lista
+        Cita citaAEliminar = null;
+        for (Cita cita : citas) {
+            if (cita.getId().equals(idCita)) {
+                citaAEliminar = cita;
+                break;
+            }
+        }
+
+        // Si se encontró la cita, elimínala de la lista
+        if (citaAEliminar != null) {
+            citas.remove(citaAEliminar);
+            System.out.println("Cita eliminada: " + citaAEliminar);
+        } else {
+            System.out.println("No se encontró una cita con el ID proporcionado.");
+        }
     }
 
 
+    public static void agregarCita() {
 
 
+        Scanner sc = new Scanner(System.in);
 
+        System.out.println("Crear cita");
+
+        System.out.println("Ingresa el ID de la cita");
+        String idCita = sc.nextLine();
+        if (idCita.equals("e")) {
+            return; // Regresar al menú principal
+        }
+
+        // Pedir y validar el nombre del doctor
+        Doctor doctorSeleccionado = null;
+        while (doctorSeleccionado == null) {
+            System.out.println("Ingresa el nombre del doctor: ");
+            String nombreDoctor = sc.nextLine();
+            if (nombreDoctor.equals("e")) {
+                return; // Regresar al menú principal
+            }
+            doctorSeleccionado = doctores.stream()
+                    .filter(doctor -> doctor.getNombre().equalsIgnoreCase(nombreDoctor))
+                    .findFirst()
+                    .orElse(null);
+            if (doctorSeleccionado == null) {
+                System.out.println("Doctor no encontrado, intenta de nuevo o ingresa 'e' para cancelar.");
+            }
+        }
+
+        // Pedir y validar el nombre del paciente
+        Paciente pacienteSeleccionado = null;
+        while (pacienteSeleccionado == null) {
+            System.out.println("Ingresa el nombre del paciente: ");
+            String nombrePaciente = sc.nextLine();
+            if (nombrePaciente.equals("e")) {
+                return; // Regresar al menú principal
+            }
+            pacienteSeleccionado = pacientes.stream()
+                    .filter(paciente -> paciente.getNombre().equalsIgnoreCase(nombrePaciente))
+                    .findFirst()
+                    .orElse(null);
+            if (pacienteSeleccionado == null) {
+                System.out.println("Paciente no encontrado, intenta de nuevo o ingresa 'e' para cancelar.");
+            }
+        }
+
+        // Pedir la fecha y hora de la cita
+        System.out.println("Ingresa la fecha y hora de la cita: ");
+        String fechaHora = sc.nextLine();
+        if (fechaHora.equals("e")) {
+            return; // Regresar al menú principal
+        }
+
+        // Pedir el motivo de la cita
+        System.out.println("Ingresa el motivo de la cita:");
+        String motivo = sc.nextLine();
+        if (motivo.equals("0")) {
+            return; // Regresar al menú principal
+        }
+
+        // Crear y añadir la nueva cita a la lista de citas
+        Cita nuevaCita = new Cita(idCita, fechaHora, motivo, doctorSeleccionado.getNombre(), pacienteSeleccionado.getNombre());
+        citas.add(nuevaCita);
+
+        System.out.println("Cita creada: " + nuevaCita);
+    }
 
 // Cambiar IDs para que sean automaticos e incrementales.
 }
