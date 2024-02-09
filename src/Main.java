@@ -51,6 +51,8 @@ public class Main {
 
             System.out.println("8. Agregar cita");
             System.out.println("9. Eliminar cita");
+            System.out.println("10. Crear datos de prueba");
+            System.out.println("11. Eliminar todos los registros");
             try {
                 System.out.print("Opción: ");
                 String input = sc.next();
@@ -100,6 +102,14 @@ public class Main {
                         // Eliminar cita
                         eliminarCita();
                         break;
+                    case 10:
+                        // Crear datos dummy
+                        crearDatosDummy();
+                        break;
+                    case 11:
+                        // Eliminar todos los registros
+                        eliminarDatos();
+                        break;
                     default:
                         // Manejar el caso en el que el número no está en las opciones
                         System.out.println("Opción no reconocida. Por favor, intenta de nuevo.");
@@ -128,100 +138,59 @@ public class Main {
 
     }
 
-    public static <T> List<T> leerObjetos(String path, Function<String, T> mapper) {
-        List<T> objetos = new ArrayList<>();
-        try (BufferedReader br = new BufferedReader(new FileReader(path))) {
-            String line;
-            while ((line = br.readLine()) != null) {
-                T objeto = mapper.apply(line);
-                if (objeto != null) {
-                    objetos.add(objeto);
-                }
-            }
-        } catch (IOException e) {
-            System.out.println("Error al cargar los datos: " + e.getMessage());
-        }
-        return objetos;
-    }
-
-    public static <T> void guardarObjetos(String path, List<T> objetos, Function<T, String> toStringFunction) {
-        try (BufferedWriter bw = new BufferedWriter(new FileWriter(path))) {
-            for (T objeto : objetos) {
-                bw.write(toStringFunction.apply(objeto));
-                bw.newLine();
-            }
-        } catch (IOException e) {
-            System.out.println("Error al guardar los datos: " + e.getMessage());
-        }
-    }
-
-    public static <T> void imprimirLista( List<T> lista, Consumer<T> impresor) {
-
-        int numeroDeSimbolos = 25;
-        String simbolo = "=";
-        String guiones = simbolo.repeat(numeroDeSimbolos);
-
-        String nombreClase = lista.get(0).getClass().getSimpleName();
-
-        String titulo = switch (nombreClase) {
-            case "Doctor" -> "DOCTORES";
-            case "Paciente" -> "PACIENTES";
-            case "Cita" -> "CITAS";
-            default -> "";
-        };
-
-        String encabezado = guiones + " " + titulo + " " + guiones;
-
-        System.out.println();
-        System.out.println(encabezado);
-
-        for (T elemento : lista) {
-            impresor.accept(elemento);
-        }
-
-        String separador = simbolo.repeat(encabezado.length());
-        System.out.println(separador);
-
-    }
-
-    public static void esperarParaVolverAlMenu() {
-
-        Scanner sc = new Scanner(System.in);
-
-        System.out.print("Presiona Enter para volver al menú");
-        sc.nextLine(); // Espera a que el usuario presione Enter
-    }
-
-    public static String leerValidarInput(){
-
-        Scanner sc = new Scanner(System.in);
-        String textoIngresado = sc.nextLine();
-        while (textoIngresado.length() < 3) {
-            System.out.println("Texto demasiado corto, intenta nuevamente...");
-            textoIngresado = sc.nextLine();
-        }
-        return textoIngresado;
-    }
 
     public static void agregarPaciente() {
 
-        System.out.print("Nombre: ");
+        System.out.print("ID: ");
+        String id = leerValidarInput();
 
-        String textoIngresado = leerValidarInput();
-        Paciente paciente = new Paciente("000", textoIngresado);
+        System.out.print("Nombre: ");
+        String nombre = leerValidarInput();
+
+        Paciente paciente = new Paciente(id, nombre);
         pacientes.add(paciente);
 
         System.out.println("Paciente registrado: " + paciente);
     }
 
+    public static void eliminarPaciente() {
+
+        Scanner sc = new Scanner(System.in);
+
+        System.out.print("Ingresa el ID del paciente a eliminar: ");
+        String id = sc.next();
+
+        // Encuentra el paciente con el ID dado en la lista
+        Paciente pacienteAeliminar = null;
+        for (Paciente paciente : pacientes) {
+            if (paciente.getId().equalsIgnoreCase(id)) {
+                pacienteAeliminar = paciente;
+                break;
+            }
+        }
+
+        // Si se encontró el paciente, elimínalo de la lista
+        if (pacienteAeliminar != null) {
+            pacientes.remove(pacienteAeliminar);
+            System.out.println("Paciente eliminado: " + pacienteAeliminar);
+        } else {
+            System.out.println("No se encontró un paciente con el ID proporcionado.");
+        }
+    }
+
     public static void agregarDoctor(){
+
+        System.out.print("ID: ");
+        String id = leerValidarInput();
 
         System.out.print("Nombre: ");
         String nombre = leerValidarInput();
 
         System.out.print("Especialidad: ");
         String especialidad = leerValidarInput();
-        Doctor doctor = new Doctor("000", nombre, especialidad);
+
+
+        Doctor doctor = new Doctor(id, nombre, especialidad);
         doctores.add(doctor);
 
         System.out.println("Doctor registrado: " + doctor);
@@ -251,58 +220,6 @@ public class Main {
             System.out.println("No se encontró un doctor con el ID proporcionado.");
         }
     }
-
-    public static void eliminarPaciente() {
-
-        Scanner sc = new Scanner(System.in);
-
-        System.out.print("Ingresa el ID del paciente a eliminar: ");
-        String id = sc.next();
-
-        // Encuentra el paciente con el ID dado en la lista
-        Paciente pacienteAeliminar = null;
-        for (Paciente paciente : pacientes) {
-            if (paciente.getId().equalsIgnoreCase(id)) {
-                pacienteAeliminar = paciente;
-                break;
-            }
-        }
-
-        // Si se encontró el paciente, elimínalo de la lista
-        if (pacienteAeliminar != null) {
-            pacientes.remove(pacienteAeliminar);
-            System.out.println("Paciente eliminado: " + pacienteAeliminar);
-        } else {
-            System.out.println("No se encontró un paciente con el ID proporcionado.");
-        }
-    }
-
-    public static void eliminarCita() {
-        System.out.println("Eliminar cita");
-
-        Scanner sc = new Scanner(System.in);
-
-        System.out.println("Ingresa el ID de la cita a eliminar: ");
-        String idCita = sc.nextLine();
-
-        // Encuentra la cita con el ID dado en la lista
-        Cita citaAEliminar = null;
-        for (Cita cita : citas) {
-            if (cita.getId().equals(idCita)) {
-                citaAEliminar = cita;
-                break;
-            }
-        }
-
-        // Si se encontró la cita, elimínala de la lista
-        if (citaAEliminar != null) {
-            citas.remove(citaAEliminar);
-            System.out.println("Cita eliminada: " + citaAEliminar);
-        } else {
-            System.out.println("No se encontró una cita con el ID proporcionado.");
-        }
-    }
-
 
     public static void agregarCita() {
 
@@ -372,7 +289,140 @@ public class Main {
         System.out.println("Cita creada: " + nuevaCita);
     }
 
-// Cambiar IDs para que sean automaticos e incrementales.
+    public static void eliminarCita() {
+        System.out.println("Eliminar cita");
+
+        Scanner sc = new Scanner(System.in);
+
+        System.out.println("Ingresa el ID de la cita a eliminar: ");
+        String idCita = sc.nextLine();
+
+        // Encuentra la cita con el ID dado en la lista
+        Cita citaAEliminar = null;
+        for (Cita cita : citas) {
+            if (cita.getId().equals(idCita)) {
+                citaAEliminar = cita;
+                break;
+            }
+        }
+
+        // Si se encontró la cita, elimínala de la lista
+        if (citaAEliminar != null) {
+            citas.remove(citaAEliminar);
+            System.out.println("Cita eliminada: " + citaAEliminar);
+        } else {
+            System.out.println("No se encontró una cita con el ID proporcionado.");
+        }
+    }
+
+    public static <T> List<T> leerObjetos(String path, Function<String, T> mapper) {
+        List<T> objetos = new ArrayList<>();
+        try (BufferedReader br = new BufferedReader(new FileReader(path))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                T objeto = mapper.apply(line);
+                if (objeto != null) {
+                    objetos.add(objeto);
+                }
+            }
+        } catch (IOException e) {
+            System.out.println("Error al cargar los datos: " + e.getMessage());
+        }
+        return objetos;
+    }
+
+    public static <T> void guardarObjetos(String path, List<T> objetos, Function<T, String> toStringFunction) {
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(path))) {
+            for (T objeto : objetos) {
+                bw.write(toStringFunction.apply(objeto));
+                bw.newLine();
+            }
+        } catch (IOException e) {
+            System.out.println("Error al guardar los datos: " + e.getMessage());
+        }
+    }
+
+    public static <T> void imprimirLista(List<T> lista, Consumer<T> impresor) {
+        if (lista == null || lista.isEmpty()) {
+            System.out.println("No hay registros para mostrar.");
+            return;
+        }
+
+        int numeroDeSimbolos = 25;
+        String simbolo = "-";
+        String guiones = simbolo.repeat(numeroDeSimbolos);
+
+        String nombreClase = lista.get(0).getClass().getSimpleName();
+        String titulo = switch (nombreClase) {
+            case "Doctor" -> "DOCTORES";
+            case "Paciente" -> "PACIENTES";
+            case "Cita" -> "CITAS";
+            default -> "";
+        };
+
+        String encabezado = guiones + " " + titulo + " " + guiones;
+        System.out.println(encabezado);
+
+        for (T elemento : lista) {
+            impresor.accept(elemento);
+        }
+
+        String separador = simbolo.repeat(encabezado.length());
+        System.out.println(separador);
+    }
+
+    public static void esperarParaVolverAlMenu() {
+
+        Scanner sc = new Scanner(System.in);
+
+        System.out.print("Presiona Enter para volver al menú");
+        sc.nextLine(); // Espera a que el usuario presione Enter
+    }
+
+    public static String leerValidarInput(){
+
+        Scanner sc = new Scanner(System.in);
+        String textoIngresado = sc.nextLine();
+        while (textoIngresado.length() < 3) {
+            System.out.println("Texto demasiado corto, intenta nuevamente...");
+            textoIngresado = sc.nextLine();
+        }
+        return textoIngresado;
+    }
+
+    public static void crearDatosDummy(){
+        // Datos de prueba para doctores
+        doctores.add(new Doctor("d001", "Julia Espinosa", "Cardiología"));
+        doctores.add(new Doctor("d002", "Mario Benedetti", "Pediatria"));
+        doctores.add(new Doctor("d003", "Laura Pausini", "Ginecología"));
+        doctores.add(new Doctor("d004", "Carlos Santana", "Medicina General"));
+        doctores.add(new Doctor("d005", "Anna Molina", "Neurología"));
+
+        // Datos de prueba para pacientes
+        pacientes.add(new Paciente("p001", "Juan Pérez"));
+        pacientes.add(new Paciente("p002", "Maria García"));
+        pacientes.add(new Paciente("p003", "José Martínez"));
+        pacientes.add(new Paciente("p004", "Laura Torres"));
+        pacientes.add(new Paciente("p005", "Carlos Hernández"));
+
+        // Datos de prueba para citas
+        citas.add(new Cita("c001", "2024-03-15 08:00", "Revisión anual", "Julia Espinosa", "Juan Pérez"));
+        citas.add(new Cita("c002", "2024-03-15 09:00", "Consulta pediátrica", "Mario Benedetti", "Maria García"));
+        citas.add(new Cita("c003", "2024-03-15 10:00", "Control prenatal", "Laura Pausini", "José Martínez"));
+        citas.add(new Cita("c004", "2024-03-15 11:00", "Consulta general", "Carlos Santana", "Laura Torres"));
+        citas.add(new Cita("c005", "2024-03-15 12:00", "Revisión neurológica", "Anna Molina", "Carlos Hernández"));
+
+        System.out.println("Datos de prueba cargados correctamente.");
+    }
+
+    public static void eliminarDatos(){
+        // Limpiar las listas existentes
+        doctores.clear();
+        pacientes.clear();
+        citas.clear();
+
+        System.out.println("Registros eliminados correctamente.");
+    }
 }
 
 

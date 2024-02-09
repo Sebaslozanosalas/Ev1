@@ -1,3 +1,0 @@
-d001,Sebastian,General
-d002,Diego,Cardiologo
-d003,Carlos,Ginecologo
